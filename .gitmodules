@@ -1,0 +1,6 @@
+[submodule "SPIRV-Tools"]
+	path = SPIRV-Tools
+	url = https://github.com/KhronosGroup/SPIRV-Tools.git
+[submodule "tint"]
+	path = tint
+	url = https://dawn.googlesource.com/tint
