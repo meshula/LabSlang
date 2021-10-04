@@ -4,3 +4,18 @@
 [submodule "tint"]
 	path = tint
 	url = https://dawn.googlesource.com/tint
+[submodule "SPIRV-Headers"]
+	path = SPIRV-Headers
+	url = https://github.com/KhronosGroup/SPIRV-Headers.git
+[submodule "dawn"]
+	path = dawn
+	url = https://dawn.googlesource.com/dawn
+[submodule "glfw"]
+	path = glfw
+	url = https://github.com/glfw/glfw.git
+[submodule "glm"]
+	path = glm
+	url = https://github.com/g-truc/glm.git
+[submodule "abseil-cpp"]
+	path = abseil-cpp
+	url = https://github.com/abseil/abseil-cpp.git
