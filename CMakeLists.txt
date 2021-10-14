@@ -8,6 +8,7 @@ if(LABSLANG_BUILD_DAWN)
 endif()
 
 set(IMGUI_BACKEND_WGPU ON)
+set(IMGUI_BACKEND_GLFW ON)
 include(imgui.cmake)
 
 set(LABSLANG_DAWN_LIBS
@@ -16,14 +17,19 @@ set(LABSLANG_DAWN_LIBS
     dawn_internal_config
     dawn_native
     dawn_proc
-    dawn_sample_utils
+    #dawn_sample_utils
     dawn_utils)
 add_executable(LabSlangCppHelloTriangle
-    ${CMAKE_SOURCE_DIR}/dawn/examples/CppHelloTriangle.cpp)
+    ${CMAKE_SOURCE_DIR}/example/CppHelloTriangle.cpp
+    ${CMAKE_SOURCE_DIR}/example/utils.cpp
+    ${CMAKE_SOURCE_DIR}/example/utils.h
+    )
 target_link_libraries(LabSlangCppHelloTriangle
-    glfw ${LABSLANG_DAWN_LIBS})
+    imgui glfw ${LABSLANG_DAWN_LIBS})
 target_include_directories(LabSlangCppHelloTriangle 
     PRIVATE "${LABSLANG_DAWN_INSTALL_ROOT}/include"
+    PRIVATE "${LABSLANG_ROOT}/example"
+    #PRIVATE "${LABSLANG_ROOT}/dawn/examples"
     PRIVATE "${LABSLANG_ROOT}/dawn/src")
 set_target_properties(LabSlangCppHelloTriangle PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY bin)
