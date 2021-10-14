@@ -47,13 +47,9 @@ wgpu::SwapChain swapchain;
 static int wgpu_swap_chain_width = 1024;
 static int wgpu_swap_chain_height = 768;
 
-wgpu::Buffer indexBuffer;
-wgpu::Buffer vertexBuffer;
-
 wgpu::Texture texture;
 wgpu::Sampler sampler;
 
-wgpu::Queue queue;
 wgpu::TextureView depthStencilView;
 wgpu::RenderPipeline pipeline;
 wgpu::BindGroup bindGroup;
@@ -280,59 +276,6 @@ GLFWwindow* GetGLFWWindow() {
 }
 
 
-
-
-
-void initBuffers() {
-    static const uint32_t indexData[3] = {
-        0,
-        1,
-        2,
-    };
-    indexBuffer =
-        utils::CreateBufferFromData(device, indexData, sizeof(indexData), wgpu::BufferUsage::Index);
-
-    static const float vertexData[12] = {
-        0.0f, 0.5f, 0.0f, 1.0f, -0.5f, -0.5f, 0.0f, 1.0f, 0.5f, -0.5f, 0.0f, 1.0f,
-    };
-    vertexBuffer = utils::CreateBufferFromData(device, vertexData, sizeof(vertexData),
-                                               wgpu::BufferUsage::Vertex);
-}
-
-void initTextures() {
-    wgpu::TextureDescriptor descriptor;
-    descriptor.dimension = wgpu::TextureDimension::e2D;
-    descriptor.size.width = 1024;
-    descriptor.size.height = 1024;
-    descriptor.size.depthOrArrayLayers = 1;
-    descriptor.sampleCount = 1;
-    descriptor.format = wgpu::TextureFormat::RGBA8Unorm;
-    descriptor.mipLevelCount = 1;
-    descriptor.usage = wgpu::TextureUsage::CopyDst | wgpu::TextureUsage::TextureBinding;
-    texture = device.CreateTexture(&descriptor);
-
-    sampler = device.CreateSampler();
-
-    // Initialize the texture with arbitrary data until we can load images
-    std::vector<uint8_t> data(4 * 1024 * 1024, 0);
-    for (size_t i = 0; i < data.size(); ++i) {
-        data[i] = static_cast<uint8_t>(i % 253);
-    }
-
-    wgpu::Buffer stagingBuffer = utils::CreateBufferFromData(
-        device, data.data(), static_cast<uint32_t>(data.size()), wgpu::BufferUsage::CopySrc);
-    wgpu::ImageCopyBuffer imageCopyBuffer =
-        utils::CreateImageCopyBuffer(stagingBuffer, 0, 4 * 1024);
-    wgpu::ImageCopyTexture imageCopyTexture = utils::CreateImageCopyTexture(texture, 0, {0, 0, 0});
-    wgpu::Extent3D copySize = {1024, 1024, 1};
-
-    wgpu::CommandEncoder encoder = device.CreateCommandEncoder();
-    encoder.CopyBufferToTexture(&imageCopyBuffer, &imageCopyTexture, &copySize);
-
-    wgpu::CommandBuffer copy = encoder.Finish();
-    queue.Submit(1, &copy);
-}
-
 void init() {
     device = CreateCppDawnDevice(wgpu_swap_chain_width, wgpu_swap_chain_height);
 
@@ -345,56 +288,10 @@ void init() {
     ImGui_ImplGlfw_InitForOther(GetGLFWWindow(), true);
     ImGui_ImplWGPU_Init(device.Get(), 3, WGPUTextureFormat_RGBA8Unorm);
 
-    queue = device.GetQueue();
     swapchain = GetSwapChain(device);
     swapchain.Configure(GetPreferredSwapChainTextureFormat(), wgpu::TextureUsage::RenderAttachment,
         wgpu_swap_chain_width,
         wgpu_swap_chain_height);
-
-    initBuffers();
-    initTextures();
-
-    wgpu::ShaderModule vsModule = utils::CreateShaderModule(device, R"(
-        [[stage(vertex)]] fn main([[location(0)]] pos : vec4<f32>)
-                               -> [[builtin(position)]] vec4<f32> {
-            return pos;
-        })");
-
-    wgpu::ShaderModule fsModule = utils::CreateShaderModule(device, R"(
-        [[group(0), binding(0)]] var mySampler: sampler;
-        [[group(0), binding(1)]] var myTexture : texture_2d<f32>;
-
-        [[stage(fragment)]] fn main([[builtin(position)]] FragCoord : vec4<f32>)
-                                 -> [[location(0)]] vec4<f32> {
-            return textureSample(myTexture, mySampler, FragCoord.xy / vec2<f32>(640.0, 480.0));
-        })");
-
-    auto bgl = utils::MakeBindGroupLayout(
-        device, {
-                    {0, wgpu::ShaderStage::Fragment, wgpu::SamplerBindingType::Filtering},
-                    {1, wgpu::ShaderStage::Fragment, wgpu::TextureSampleType::Float},
-                });
-
-    wgpu::PipelineLayout pl = utils::MakeBasicPipelineLayout(device, &bgl);
-
-    depthStencilView = CreateDefaultDepthStencilView(device, wgpu_swap_chain_width, wgpu_swap_chain_height);
-
-    utils::ComboRenderPipelineDescriptor descriptor;
-    descriptor.layout = utils::MakeBasicPipelineLayout(device, &bgl);
-    descriptor.vertex.module = vsModule;
-    descriptor.vertex.bufferCount = 1;
-    descriptor.cBuffers[0].arrayStride = 4 * sizeof(float);
-    descriptor.cBuffers[0].attributeCount = 1;
-    descriptor.cAttributes[0].format = wgpu::VertexFormat::Float32x4;
-    descriptor.cFragment.module = fsModule;
-    descriptor.cTargets[0].format = GetPreferredSwapChainTextureFormat();
-    descriptor.EnableDepthStencil(wgpu::TextureFormat::Depth24PlusStencil8);
-
-    pipeline = device.CreateRenderPipeline(&descriptor);
-
-    wgpu::TextureView view = texture.CreateView();
-
-    bindGroup = utils::MakeBindGroup(device, bgl, {{0, sampler}, {1, view}});
 }
 
 
@@ -428,24 +325,6 @@ void frame()
         ImGui_ImplWGPU_CreateDeviceObjects();
         DoFlush();
     }
-
-    wgpu::TextureView backbufferView = swapchain.GetCurrentTextureView();
-    utils::ComboRenderPassDescriptor renderPass({backbufferView}, depthStencilView);
-
-    wgpu::CommandEncoder encoder = device.CreateCommandEncoder();
-    {
-        wgpu::RenderPassEncoder pass = encoder.BeginRenderPass(&renderPass);
-        pass.SetPipeline(pipeline);
-        pass.SetBindGroup(0, bindGroup);
-        pass.SetVertexBuffer(0, vertexBuffer);
-        pass.SetIndexBuffer(indexBuffer, wgpu::IndexFormat::Uint32);
-        pass.DrawIndexed(3);
-        pass.EndPass();
-    }
-
-    wgpu::CommandBuffer commands = encoder.Finish();
-    queue.Submit(1, &commands);
-
 
 
 //////////////
