@@ -42,7 +42,7 @@ add_library(imgui
     $<$<BOOL:${IMGUI_BACKEND_SDL}>:imgui/backends/imgui_impl_sdl.cpp>
     $<$<BOOL:${IMGUI_BACKEND_SDL_RENDERER}>:imgui/backends/imgui_impl_sdlrenderer.cpp>
     $<$<BOOL:${IMGUI_BACKEND_VULKAN}>:imgui/backends/imgui_impl_vulkan.cpp>
-    $<$<BOOL:${IMGUI_BACKEND_WGPU}>:imgui_impl_wgpu.cpp>
+    $<$<BOOL:${IMGUI_BACKEND_WGPU}>:imgui/backends/imgui_impl_wgpu.cpp>
     $<$<BOOL:${IMGUI_BACKEND_WINAPI}>:imgui/backends/imgui_impl_win32.cpp>
 )
 
