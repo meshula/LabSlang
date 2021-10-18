@@ -8,8 +8,14 @@ endif()
 
 add_subdirectory(SPIRV-Headers)
 add_subdirectory(SPIRV-Tools)
+
+set(ENABLE_SPVREMAPPER OFF)
+set(ENABLE_CTEST OFF)
+set(TINT_THIRD_PARTY_DIR ${LABSLANG_ROOT})
 set(TINT_BUILD_SPV_READER ON)
+set(TINT_BUILD_GLSL_WRITER ON)
 add_subdirectory(tint)
+
 add_subdirectory(glm)
 add_subdirectory(glfw)
 set(DAWN_ABSEIL_DIR "${LABSLANG_ROOT}/abseil-cpp")

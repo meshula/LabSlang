@@ -1,6 +1,14 @@
 cmake_minimum_required(VERSION 3.19)
 project(LabSlang)
 set(LABSLANG_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
+
+if (POLICY CMP0077)
+    cmake_policy(SET CMP0077 NEW)
+endif()
+
+#------------------------------------------------------------------------------
+# Build LabSlang, this will also build Tint and spirv-tools
+
 option(LABSLANG_BUILD_DAWN "" ON)
 set(LABSLANG_DAWN_INSTALL_ROOT "C:/tmp/install" CACHE PATH "Location of installed Dawn")
 if(LABSLANG_BUILD_DAWN)
