@@ -22,3 +22,6 @@
 [submodule "imgui"]
 	path = imgui
 	url = https://github.com/ocornut/imgui.git
+[submodule "glslang"]
+	path = glslang
+	url = https://github.com/KhronosGroup/glslang
