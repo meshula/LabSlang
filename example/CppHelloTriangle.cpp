@@ -25,9 +25,9 @@
 #include "utils/TerribleCommandBuffer.h"
 #include "utils/WGPUHelpers.h"
 
-#include "imgui.h"
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_wgpu.h"
+#include <imgui.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_wgpu.h>
 
 #include <dawn/dawn_proc.h>
 #include <dawn/dawn_wsi.h>
@@ -303,7 +303,7 @@ void frame()
     glfwGetFramebufferSize(GetGLFWWindow(), &width, &height);
 
     // React to changes in screen size
-    if (width != wgpu_swap_chain_width && height != wgpu_swap_chain_height)
+    if (width != wgpu_swap_chain_width || height != wgpu_swap_chain_height)
     {
         ImGui_ImplWGPU_InvalidateDeviceObjects();
         if (swapchain.Get())

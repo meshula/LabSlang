@@ -27,6 +27,7 @@ set(LABSLANG_DAWN_LIBS
     dawn_proc
     #dawn_sample_utils
     dawn_utils)
+
 add_executable(LabSlangCppHelloTriangle
     ${CMAKE_SOURCE_DIR}/example/CppHelloTriangle.cpp
     ${CMAKE_SOURCE_DIR}/example/utils.cpp
@@ -43,6 +44,25 @@ set_target_properties(LabSlangCppHelloTriangle PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY bin)
 set_property(TARGET LabSlangCppHelloTriangle PROPERTY FOLDER "LabSlang examples")
 install(TARGETS LabSlangCppHelloTriangle
+    BUNDLE DESTINATION bin
+    RUNTIME DESTINATION bin)
+
+add_executable(LabSlangSwapChain
+    ${CMAKE_SOURCE_DIR}/example/ManualSwapChainTest.cpp
+    ${CMAKE_SOURCE_DIR}/example/utils.cpp
+    ${CMAKE_SOURCE_DIR}/example/utils.h
+    )
+target_link_libraries(LabSlangSwapChain
+    imgui glfw ${LABSLANG_DAWN_LIBS})
+target_include_directories(LabSlangSwapChain 
+    PRIVATE "${LABSLANG_DAWN_INSTALL_ROOT}/include"
+    PRIVATE "${LABSLANG_ROOT}/example"
+    #PRIVATE "${LABSLANG_ROOT}/dawn/examples"
+    PRIVATE "${LABSLANG_ROOT}/dawn/src")
+set_target_properties(LabSlangSwapChain PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY bin)
+set_property(TARGET LabSlangSwapChain PROPERTY FOLDER "LabSlang examples")
+install(TARGETS LabSlangSwapChain
     BUNDLE DESTINATION bin
     RUNTIME DESTINATION bin)
 
