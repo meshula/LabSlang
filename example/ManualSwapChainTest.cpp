@@ -65,6 +65,7 @@
 
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
+#include <imgui_impl_wgpu.h>
 
 #include <memory>
 #include <unordered_map>
@@ -130,6 +131,8 @@ void AddWindow() {
     SyncFromWindow(data.get());
 
     windows[window] = std::move(data);
+
+    ImGui_ImplGlfw_InitForOther(window, true);
 }
 
 void DoRender(WindowData* data) {
@@ -159,6 +162,23 @@ void DoRender(WindowData* data) {
 
         wgpu::RenderPassEncoder pass = encoder.BeginRenderPass(&desc);
         pass.EndPass();
+    }
+
+    {
+        static ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+        WGPURenderPassColorAttachment color_attachments = {};
+        color_attachments.loadOp = WGPULoadOp_Clear;
+        color_attachments.storeOp = WGPUStoreOp_Store;
+        color_attachments.clearColor = { clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w };
+        color_attachments.view = view.Get();
+        WGPURenderPassDescriptor render_pass_desc = {};
+        render_pass_desc.colorAttachmentCount = 1;
+        render_pass_desc.colorAttachments = &color_attachments;
+        render_pass_desc.depthStencilAttachment = NULL;
+
+        WGPURenderPassEncoder pass = wgpuCommandEncoderBeginRenderPass(encoder.Get(), &render_pass_desc);
+        ImGui_ImplWGPU_RenderDrawData(ImGui::GetDrawData(), pass);
+        wgpuRenderPassEncoderEndPass(pass);
     }
 
     wgpu::CommandBuffer commands = encoder.Finish();
@@ -258,6 +278,16 @@ void OnKeyPress(GLFWwindow* window, int key, int, int action, int) {
     }
 }
 
+void RunWindow(WindowData* data)
+{
+    ImGui_ImplWGPU_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+    static bool show_demo_window = true;
+    ImGui::ShowDemoWindow(&show_demo_window);
+    ImGui::Render();
+}
+
 int main(int argc, const char* argv[]) {
     // Setup GLFW
     glfwSetErrorCallback([](int code, const char* message) {
@@ -345,6 +375,8 @@ int main(int argc, const char* argv[]) {
 
     // Create the first window, since the example exits when there are no windows.
     AddWindow();
+    ImGui_ImplWGPU_Init(device.Get(), 3, WGPUTextureFormat_BGRA8Unorm);
+
 
     while (windows.size() != 0) {
         utils::ScopedAutoreleasePool pool;
@@ -370,6 +402,7 @@ int main(int argc, const char* argv[]) {
                 data->currentDesc = data->targetDesc;
             }
             UpdateTitle(data);
+            RunWindow(data);
             DoRender(data);
         }
     }
