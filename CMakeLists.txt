@@ -17,6 +17,8 @@ endif()
 
 set(IMGUI_BACKEND_WGPU ON)
 set(IMGUI_BACKEND_GLFW ON)
+set(IMGUI_BACKEND_DAWN ON)
+set(WEBGPU_HEADER_LOCATION "${CMAKE_INSTALL_PREFIX}/include")
 include(imgui.cmake)
 
 set(LABSLANG_DAWN_LIBS
@@ -25,8 +27,8 @@ set(LABSLANG_DAWN_LIBS
     dawn_internal_config
     dawn_native
     dawn_proc
-    #dawn_sample_utils
-    dawn_utils)
+    dawn_utils
+    dawn_wire)
 
 add_executable(LabSlangCppHelloTriangle
     ${CMAKE_SOURCE_DIR}/example/CppHelloTriangle.cpp
@@ -43,6 +45,7 @@ target_include_directories(LabSlangCppHelloTriangle
 set_target_properties(LabSlangCppHelloTriangle PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY bin)
 set_property(TARGET LabSlangCppHelloTriangle PROPERTY FOLDER "LabSlang examples")
+set_property(TARGET LabSlangCppHelloTriangle PROPERTY CXX_STANDARD 17)
 install(TARGETS LabSlangCppHelloTriangle
     BUNDLE DESTINATION bin
     RUNTIME DESTINATION bin)
@@ -62,6 +65,7 @@ target_include_directories(LabSlangSwapChain
 set_target_properties(LabSlangSwapChain PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY bin)
 set_property(TARGET LabSlangSwapChain PROPERTY FOLDER "LabSlang examples")
+set_property(TARGET LabSlangSwapChain PROPERTY CXX_STANDARD 17)
 install(TARGETS LabSlangSwapChain
     BUNDLE DESTINATION bin
     RUNTIME DESTINATION bin)
