@@ -149,7 +149,8 @@ void DoRender(WindowData* data) {
         pass.SetPipeline(trianglePipeline);
         pass.Draw(3);
         pass.EndPass();
-    } else {
+    } 
+    else {
         data->clearCycle -= 1.0 / 60.f;
         if (data->clearCycle < 0.0) {
             data->clearCycle = 1.0f;
@@ -167,7 +168,7 @@ void DoRender(WindowData* data) {
     {
         static ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
         WGPURenderPassColorAttachment color_attachments = {};
-        color_attachments.loadOp = WGPULoadOp_Clear;
+        color_attachments.loadOp = WGPULoadOp_Load;
         color_attachments.storeOp = WGPUStoreOp_Store;
         color_attachments.clearColor = { clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w };
         color_attachments.view = view.Get();
@@ -239,7 +240,10 @@ void OnKeyPress(GLFWwindow* window, int key, int, int action, int) {
     WindowData* data = windows[window].get();
     switch (key) {
         case GLFW_KEY_W:
-            AddWindow();
+            // Note: ImGui doesn't work well with multiple windows on Linux, and
+            // I want this example to be portable.
+            // see the comments about X11 here - https://github.com/ocornut/imgui/wiki/Multi-Viewports
+            //AddWindow();
             break;
 
         case GLFW_KEY_L:
@@ -283,8 +287,11 @@ void RunWindow(WindowData* data)
     ImGui_ImplWGPU_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
-    static bool show_demo_window = true;
-    ImGui::ShowDemoWindow(&show_demo_window);
+
+    if (data->serial == 0) {
+        static bool show_demo_window = true;
+        ImGui::ShowDemoWindow(&show_demo_window);
+    }
     ImGui::Render();
 }
 
@@ -370,6 +377,7 @@ int main(int argc, const char* argv[]) {
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
     io.IniFilename = NULL;
+    //io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
     ImGui::StyleColorsDark();
 
 
@@ -404,6 +412,13 @@ int main(int argc, const char* argv[]) {
             UpdateTitle(data);
             RunWindow(data);
             DoRender(data);
+
+            // Update and Render additional Platform Windows
+            if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+            {
+                ImGui::UpdatePlatformWindows();
+                ImGui::RenderPlatformWindowsDefault();
+            }
         }
     }
 }
