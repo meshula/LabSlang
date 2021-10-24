@@ -32,9 +32,11 @@ foreach (H ${webgpu_gen_headers})
             DESTINATION ${CMAKE_INSTALL_PREFIX}/include/dawn)
 endforeach()
 
+add_custom_target(webgpu_header)
 # install webgpu.h additionally in the conventional place
-install(FILES ${CMAKE_BINARY_DIR}/dawn/gen/src/include/dawn/webgpu.h
-        DESTINATION ${CMAKE_INSTALL_PREFIX}/include/webgpu)
+add_custom_command(TARGET webgpu_header 
+    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/dawn/gen/src/include/dawn/webgpu.h
+                                     ${CMAKE_INSTALL_PREFIX}/include/webgpu/webgpu.h)
 
 set(dawn_headers
     dawn_proc.h

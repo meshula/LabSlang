@@ -18,6 +18,7 @@ option(IMGUI_BACKEND_SDL "SDL2 (Windows, macOS, Linux, iOS, Android)")
 option(IMGUI_BACKEND_SDL_RENDERER "SDL2 renderer")
 option(IMGUI_BACKEND_VULKAN "Vulkan")
 option(IMGUI_BACKEND_WGPU "WebGPU")
+option(IMGUI_BACKEND_DAWN "Dawn")
 option(IMGUI_BACKEND_WINAPI "Win32 native API")
 
 add_library(imgui
@@ -46,21 +47,33 @@ add_library(imgui
     $<$<BOOL:${IMGUI_BACKEND_WINAPI}>:imgui/backends/imgui_impl_win32.cpp>
 )
 
+set_property(TARGET imgui PROPERTY CXX_STANDARD 11)
+
 target_include_directories(imgui
     PUBLIC
         imgui
         imgui/backends
     PRIVATE 
         "${LABSLANG_DAWN_INSTALL_ROOT}/include"
+        "${WEBGPU_HEADER_LOCATION}"
 )
+
+if (IMGUI_BACKEND_DAWN)
+    add_dependencies(imgui webgpu_header)
+endif()
 
 target_link_libraries(imgui
     PRIVATE
         $<$<BOOL:${IMGUI_BACKEND_ANDROID}>:android>
+        $<$<BOOL:${IMGUI_BACKED_DAWN}>:dawn_native>
         $<$<BOOL:${IMGUI_BACKEND_DX9}>:d3d9.lib>
-        $<$<BOOL:${IMGUI_BACKEND_DX10}>:d3d10.lib;d3dcompiler.lib>
-        $<$<BOOL:${IMGUI_BACKEND_DX11}>:d3d11.lib;d3dcompiler.lib>
-        $<$<BOOL:${IMGUI_BACKEND_DX12}>:d3d12.lib;d3dcompiler.lib;dxgi.lib>
+        $<$<BOOL:${IMGUI_BACKEND_DX10}>:d3d10.lib>
+        $<$<BOOL:${IMGUI_BACKEND_DX11}>:d3d11.lib>
+        $<$<BOOL:${IMGUI_BACKEND_DX12}>:d3d12.lib>
+        $<$<BOOL:${IMGUI_BACKEND_DX10}>:d3dcompiler.lib>
+        $<$<BOOL:${IMGUI_BACKEND_DX11}>:d3dcompiler.lib>
+        $<$<BOOL:${IMGUI_BACKEND_DX12}>:d3dcompiler.lib>
+        $<$<BOOL:${IMGUI_BACKEND_DX12}>:dxgi.lib>
         $<$<BOOL:${IMGUI_BACKEND_GLFW}>:glfw>
         $<$<BOOL:${IMGUI_BACKEND_GLUT}>:glut>
         $<$<BOOL:${IMGUI_BACKEND_METAL}>:"-framework Metal -framework MetalKit -framework QuartzCore">
