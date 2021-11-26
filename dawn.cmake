@@ -38,6 +38,9 @@ add_custom_command(TARGET webgpu_header
     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/dawn/gen/src/include/dawn/webgpu.h
                                      ${CMAKE_INSTALL_PREFIX}/include/webgpu/webgpu.h)
 
+
+
+
 set(dawn_headers
     dawn_proc.h
     dawn_thread_dispatch_proc.h
@@ -48,6 +51,9 @@ foreach (H ${dawn_headers})
     install(FILES ${CMAKE_SOURCE_DIR}/dawn/src/include/dawn/${H}
             DESTINATION ${CMAKE_INSTALL_PREFIX}/include/dawn)
 endforeach()
+
+# add a dependency to force installation of the webgpu header
+add_dependencies(dawn_sample_utils webgpu_header)
 
 set(dawn_libs
     dawncpp
