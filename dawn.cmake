@@ -7,6 +7,7 @@ if (POLICY CMP0077)
 endif()
 
 add_subdirectory(SPIRV-Headers)
+set(SPIRV_SKIP_EXECUTABLES ON)
 add_subdirectory(SPIRV-Tools)
 
 set(ENABLE_SPVREMAPPER OFF)
@@ -16,9 +17,10 @@ set(TINT_BUILD_SPV_READER ON)
 set(TINT_BUILD_GLSL_WRITER ON)
 add_subdirectory(tint)
 
-add_subdirectory(glm)
-add_subdirectory(glfw)
+#add_subdirectory(glm)
+#add_subdirectory(glfw)
 set(DAWN_ABSEIL_DIR "${LABSLANG_ROOT}/abseil-cpp")
+set(ABSL_ENABLE_INSTALL OFF)
 add_subdirectory(dawn)
 
 set(webgpu_gen_headers
@@ -32,14 +34,8 @@ foreach (H ${webgpu_gen_headers})
             DESTINATION ${CMAKE_INSTALL_PREFIX}/include/dawn)
 endforeach()
 
-add_custom_target(webgpu_header)
-# install webgpu.h additionally in the conventional place
-add_custom_command(TARGET webgpu_header 
-    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/dawn/gen/src/include/dawn/webgpu.h
-                                     ${CMAKE_INSTALL_PREFIX}/include/webgpu/webgpu.h)
-
-
-
+install(FILES ${CMAKE_BINARY_DIR}/dawn/gen/src/include/dawn/webgpu.h
+        DESTINATION ${CMAKE_INSTALL_PREFIX}/include/webgpu)
 
 set(dawn_headers
     dawn_proc.h
@@ -52,9 +48,6 @@ foreach (H ${dawn_headers})
             DESTINATION ${CMAKE_INSTALL_PREFIX}/include/dawn)
 endforeach()
 
-# add a dependency to force installation of the webgpu header
-add_dependencies(dawn_sample_utils webgpu_header)
-
 set(dawn_libs
     dawncpp
     dawn_common
@@ -62,7 +55,7 @@ set(dawn_libs
     dawn_native
     dawn_proc
     dawn_sample_utils
-    dawn_utils
+    #dawn_utils
     dawn_wire)
 
 install(TARGETS dawn_internal_config
@@ -107,10 +100,10 @@ install(TARGETS dawn_utils
     ARCHIVE DESTINATION "${CMAKE_INSTALL_PREFIX}/lib"
     RUNTIME DESTINATION "${CMAKE_INSTALL_PREFIX}/bin"
     PUBLIC_HEADER DESTINATION "${CMAKE_INSTALL_PREFIX}/include")
-install(TARGETS dawn_sample_utils
-    EXPORT dawn_sample_utils
-    LIBRARY DESTINATION "${CMAKE_INSTALL_PREFIX}/lib"
-    ARCHIVE DESTINATION "${CMAKE_INSTALL_PREFIX}/lib"
-    RUNTIME DESTINATION "${CMAKE_INSTALL_PREFIX}/bin"
-    PUBLIC_HEADER DESTINATION "${CMAKE_INSTALL_PREFIX}/include")
+#install(TARGETS dawn_sample_utils
+#    EXPORT dawn_sample_utils
+#    LIBRARY DESTINATION "${CMAKE_INSTALL_PREFIX}/lib"
+#    ARCHIVE DESTINATION "${CMAKE_INSTALL_PREFIX}/lib"
+#    RUNTIME DESTINATION "${CMAKE_INSTALL_PREFIX}/bin"
+#    PUBLIC_HEADER DESTINATION "${CMAKE_INSTALL_PREFIX}/include")
     
