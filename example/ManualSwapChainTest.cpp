@@ -139,47 +139,44 @@ void DoRender(WindowData* data) {
     wgpu::TextureView view = data->swapchain.GetCurrentTextureView();
     wgpu::CommandEncoder encoder = device.CreateCommandEncoder();
 
-    if (data->renderTriangle) {
-        utils::ComboRenderPassDescriptor desc({view});
-        // Use Load to check the swapchain is lazy cleared (we shouldn't see garbage from previous
-        // frames).
-        desc.cColorAttachments[0].loadOp = wgpu::LoadOp::Load;
+    if(0) {
+        if (data->renderTriangle) {
+            utils::ComboRenderPassDescriptor desc({ view });
+            // Use Load to check the swapchain is lazy cleared (we shouldn't see garbage from previous
+            // frames).
+            desc.cColorAttachments[0].loadOp = wgpu::LoadOp::Load;
 
-        wgpu::RenderPassEncoder pass = encoder.BeginRenderPass(&desc);
-        pass.SetPipeline(trianglePipeline);
-        pass.Draw(3);
-        pass.EndPass();
-    } 
-    else {
-        data->clearCycle -= 1.0 / 60.f;
-        if (data->clearCycle < 0.0) {
-            data->clearCycle = 1.0f;
+            wgpu::RenderPassEncoder pass = encoder.BeginRenderPass(&desc);
+            pass.SetPipeline(trianglePipeline);
+            pass.Draw(3);
+            pass.EndPass();
         }
+        else {
+            data->clearCycle -= 1.0 / 60.f;
+            if (data->clearCycle < 0.0) {
+                data->clearCycle = 1.0f;
+            }
 
-        utils::ComboRenderPassDescriptor desc({view});
-        desc.cColorAttachments[0].loadOp = wgpu::LoadOp::Clear;
-        desc.cColorAttachments[0].clearColor = {data->clearCycle, 1.0f - data->clearCycle, 0.0f,
-                                                1.0f};
+            utils::ComboRenderPassDescriptor desc({ view });
+            desc.cColorAttachments[0].loadOp = wgpu::LoadOp::Clear;
+            desc.cColorAttachments[0].clearColor = { data->clearCycle, 1.0f - data->clearCycle, 0.0f,
+                                                    1.0f };
 
-        wgpu::RenderPassEncoder pass = encoder.BeginRenderPass(&desc);
-        pass.EndPass();
+            wgpu::RenderPassEncoder pass = encoder.BeginRenderPass(&desc);
+            pass.EndPass();
+        }
     }
-
     {
         static ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-        WGPURenderPassColorAttachment color_attachments = {};
-        color_attachments.loadOp = WGPULoadOp_Load;
-        color_attachments.storeOp = WGPUStoreOp_Store;
-        color_attachments.clearColor = { clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w };
-        color_attachments.view = view.Get();
-        WGPURenderPassDescriptor render_pass_desc = {};
-        render_pass_desc.colorAttachmentCount = 1;
-        render_pass_desc.colorAttachments = &color_attachments;
-        render_pass_desc.depthStencilAttachment = NULL;
+        utils::ComboRenderPassDescriptor desc({ view });
+        desc.cColorAttachments[0].loadOp = wgpu::LoadOp::Load;
+        desc.cColorAttachments[0].storeOp = wgpu::StoreOp::Store;
+        desc.cColorAttachments[0].clearColor = { clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w };
+        desc.cColorAttachments[0].view = view;
+        wgpu::RenderPassEncoder imgui_pass = encoder.BeginRenderPass(&desc);
 
-        WGPURenderPassEncoder pass = wgpuCommandEncoderBeginRenderPass(encoder.Get(), &render_pass_desc);
-        ImGui_ImplWGPU_RenderDrawData(ImGui::GetDrawData(), pass);
-        wgpuRenderPassEncoderEndPass(pass);
+        ImGui_ImplWGPU_RenderDrawData(ImGui::GetDrawData(), imgui_pass.Get());
+        imgui_pass.EndPass();
     }
 
     wgpu::CommandBuffer commands = encoder.Finish();
