@@ -10,9 +10,6 @@
 [submodule "dawn"]
 	path = dawn
 	url = https://dawn.googlesource.com/dawn
-[submodule "glm"]
-	path = glm
-	url = https://github.com/g-truc/glm.git
 [submodule "abseil-cpp"]
 	path = abseil-cpp
 	url = https://github.com/meshula/abseil-cpp.git
