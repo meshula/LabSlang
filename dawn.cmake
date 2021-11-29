@@ -42,10 +42,22 @@ set(dawn_headers
     dawn_thread_dispatch_proc.h
     dawn_wsi.h
     EnumClassBitmasks.h)
-
 foreach (H ${dawn_headers})
     install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/dawn/src/include/dawn/${H}
             DESTINATION ${CMAKE_INSTALL_PREFIX}/include/dawn)
+endforeach()
+
+set(dawn_native_headers
+    D3D12Backend.h
+    DawnNative.h
+    MetalBackend.h
+    NullBackend.h
+    OpenGLBackend.h
+    VulkanBackend.h
+    dawn_native_export.h)
+foreach (H ${dawn_native_headers})
+    install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/dawn/src/include/dawn_native/${H}
+            DESTINATION ${CMAKE_INSTALL_PREFIX}/include/dawn_native)
 endforeach()
 
 set(dawn_libs
