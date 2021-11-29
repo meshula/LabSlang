@@ -13,9 +13,6 @@
 [submodule "abseil-cpp"]
 	path = abseil-cpp
 	url = https://github.com/meshula/abseil-cpp.git
-[submodule "imgui"]
-	path = imgui
-	url = https://github.com/ocornut/imgui.git
 [submodule "glslang"]
 	path = glslang
 	url = https://github.com/KhronosGroup/glslang
