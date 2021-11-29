@@ -6,6 +6,13 @@ if (POLICY CMP0077)
     cmake_policy(SET CMP0077 NEW)
 endif()
 
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
+if (NOT CMAKE_BUILD_TYPE)
+    message(WARNING "CMAKE_BUILD_TYPE not set, setting it to RelWithDebInfo so that Dawn doesn't force debug")
+    set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "Build Type" FORCE)
+endif()
+
 # glfw is required to get a bunch of the helper functionality
 # if the platform bindings can be made available without glfw
 # this can be removed.
