@@ -30,11 +30,11 @@ set(webgpu_gen_headers
     webgpu_cpp_print.h)
 
 foreach (H ${webgpu_gen_headers})
-    install(FILES ${CMAKE_BINARY_DIR}/dawn/gen/src/include/dawn/${H}
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/dawn/gen/src/include/dawn/${H}
             DESTINATION ${CMAKE_INSTALL_PREFIX}/include/dawn)
 endforeach()
 
-install(FILES ${CMAKE_BINARY_DIR}/dawn/gen/src/include/dawn/webgpu.h
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/dawn/gen/src/include/dawn/webgpu.h
         DESTINATION ${CMAKE_INSTALL_PREFIX}/include/webgpu)
 
 set(dawn_headers
@@ -44,7 +44,7 @@ set(dawn_headers
     EnumClassBitmasks.h)
 
 foreach (H ${dawn_headers})
-    install(FILES ${CMAKE_SOURCE_DIR}/dawn/src/include/dawn/${H}
+    install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/dawn/src/include/dawn/${H}
             DESTINATION ${CMAKE_INSTALL_PREFIX}/include/dawn)
 endforeach()
 
