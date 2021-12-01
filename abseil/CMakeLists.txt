@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.19)
 project(abseil)
-add_library(abseil-shim STATIC abseil-shim.cpp)
-target_include_directories(abseil-shim PUBLIC ../abseil-cpp)
-
+add_library(absl_strings STATIC abseil-strings.cpp)
+target_include_directories(absl_strings PUBLIC ../abseil-cpp)
+add_library(absl_str_format_internal STATIC abseil-str-format.cpp abseil-numbers.cpp)
+target_include_directories(absl_str_format_internal PUBLIC ../abseil-cpp)
