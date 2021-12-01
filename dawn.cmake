@@ -19,9 +19,10 @@ add_subdirectory(tint)
 
 #add_subdirectory(glm)
 #add_subdirectory(glfw)
-set(DAWN_ABSEIL_DIR "${LABSLANG_ROOT}/abseil-cpp")
+set(DAWN_ABSEIL_DIR "${LABSLANG_ROOT}/abseil")
 set(ABSL_ENABLE_INSTALL OFF)
 add_subdirectory(dawn)
+target_include_directories(dawn_native PRIVATE "${LABSLANG_ROOT}/abseil-cpp")
 
 set(webgpu_gen_headers
     dawn_proc_table.h

@@ -17,7 +17,7 @@ endif()
 # if the platform bindings can be made available without glfw
 # this can be removed.
 if (NOT TARGET glfw)
-    find_package(glfw3 REQUIRED)
+    #    find_package(glfw3 REQUIRED)
 endif()
 
 #------------------------------------------------------------------------------
