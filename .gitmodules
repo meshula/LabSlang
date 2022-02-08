@@ -12,7 +12,7 @@
 	url = https://dawn.googlesource.com/dawn
 [submodule "abseil-cpp"]
 	path = abseil-cpp
-	url = https://github.com/meshula/abseil-cpp.git
+    url = https://github.com/abseil/abseil-cpp.git
 [submodule "glslang"]
 	path = glslang
 	url = https://github.com/KhronosGroup/glslang
