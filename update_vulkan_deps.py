@@ -5,6 +5,11 @@ def git_update(url: str, sha: str) -> None:
     original_cwd = os.getcwd()
     os.chdir("vulkan-deps")
     repo_name = url.split("/")[-1]
+    print("BEFORE >>>>> ", repo_name)
+    if repo_name.endswith(".git"):
+        repo_name = repo_name.rstrip(".git")
+    print(">>>>> ", repo_name)
+
     if os.path.exists(repo_name):
         os.chdir(repo_name)
         subprocess.run(["git", "pull"])
@@ -13,16 +18,19 @@ def git_update(url: str, sha: str) -> None:
         subprocess.run(["git", "clone", url])
     os.chdir(repo_name)
     if sha == "HEAD":
-        subprocess.run(["git", "checkout", "main"])
+        subprocess.run(["git", "checkout", "master"])
     else:
         subprocess.run(["git", "checkout", sha])
     os.chdir(original_cwd)
 
 path = "vulkan-deps-src"
-if not.os.path.exists("vulkan-deps"):
+if not os.path.exists("vulkan-deps"):
     os.makedirs("vulkan-deps")
 for root, dirs, files in os.walk(path):
-    print("------------------\n", root, "\n-------------------\n")
+    if root == path:
+        continue
+
+    print("------------------\n", root, path, "\n-------------------\n")
     if "README.chromium" in files:
         SHA = "HEAD"
         URL = None
