@@ -1,6 +1,3 @@
-[submodule "tint"]
-	path = tint
-	url = https://dawn.googlesource.com/tint
 [submodule "dawn"]
 	path = dawn
 	url = https://dawn.googlesource.com/dawn
