@@ -18,9 +18,11 @@ def git_update(url: str, sha: str) -> None:
         subprocess.run(["git", "checkout", sha])
     os.chdir(original_cwd)
 
-path = "vulkan-deps"
+path = "vulkan-deps-src"
+if not.os.path.exists("vulkan-deps"):
+    os.makedirs("vulkan-deps")
 for root, dirs, files in os.walk(path):
-    print(root)
+    print("------------------\n", root, "\n-------------------\n")
     if "README.chromium" in files:
         SHA = "HEAD"
         URL = None
