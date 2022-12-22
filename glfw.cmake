@@ -1,5 +1,6 @@
 # this target guard exists so that if glfw was previously built by another
 # project in the hierarchy it won't be redundantly built
+
 if (TARGET glfw)
     message(STATUS "Found glfw")
 else()

@@ -1,18 +1,12 @@
-[submodule "SPIRV-Tools"]
-	path = SPIRV-Tools
-	url = https://github.com/KhronosGroup/SPIRV-Tools.git
 [submodule "tint"]
 	path = tint
 	url = https://dawn.googlesource.com/tint
-[submodule "SPIRV-Headers"]
-	path = SPIRV-Headers
-	url = https://github.com/KhronosGroup/SPIRV-Headers.git
 [submodule "dawn"]
 	path = dawn
 	url = https://dawn.googlesource.com/dawn
 [submodule "abseil-cpp"]
 	path = abseil-cpp
     url = https://github.com/abseil/abseil-cpp.git
-[submodule "glslang"]
-	path = glslang
-	url = https://github.com/KhronosGroup/glslang
+[submodule "vulkan-deps"]
+	path = vulkan-deps
+	url = https://chromium.googlesource.com/vulkan-deps
