@@ -1,6 +1,7 @@
 import os
 import subprocess
 
+# this updates the git repos according to the pattern the dawn build expects
 def git_update(url: str, sha: str) -> None:
     original_cwd = os.getcwd()
     os.chdir("vulkan-deps")
@@ -11,12 +12,12 @@ def git_update(url: str, sha: str) -> None:
     print(">>>>> ", repo_name)
 
     if os.path.exists(repo_name):
-        os.chdir(repo_name)
+        os.chdir(repo_name + "/src")
         subprocess.run(["git", "pull"])
         os.chdir(os.pardir)
     else:
-        subprocess.run(["git", "clone", url])
-    os.chdir(repo_name)
+        subprocess.run(["git", "clone", url, repo_name + "/src"])
+    os.chdir(repo_name + "/src")
     if sha == "HEAD":
         subprocess.run(["git", "checkout", "master"])
     else:
