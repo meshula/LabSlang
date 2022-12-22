@@ -7,6 +7,3 @@
 [submodule "abseil-cpp"]
 	path = abseil-cpp
     url = https://github.com/abseil/abseil-cpp.git
-[submodule "vulkan-deps"]
-	path = vulkan-deps
-	url = https://chromium.googlesource.com/vulkan-deps
