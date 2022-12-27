@@ -1,19 +1,29 @@
 import os
 import subprocess
+import sys
+
+print("note that the specified vulkan header tag is for v1.2, but dawn itself")
+print("uses vulkan 1.3 features. checking out Vulkan-Headers v1.3.328 works.")
+
+if sys.version_info < (3, 9):
+    print("Python 3.9 or greater is required")
+    sys.exit()
 
 # this updates the git repos according to the pattern the dawn build expects
 def git_update(url: str, sha: str) -> None:
     original_cwd = os.getcwd()
     os.chdir("vulkan-deps")
     repo_name = url.split("/")[-1]
-    print("BEFORE >>>>> ", repo_name)
-    if repo_name.endswith(".git"):
-        repo_name = repo_name.rstrip(".git")
-    print(">>>>> ", repo_name)
+    #print("BEFORE >>>>> ", repo_name)
+    repo_name = repo_name.removesuffix(".git")
+    #if repo_name.endswith(".git"):
+    #    repo_name = repo_name.rstrip(".git")
+    #print(">>>>> ", repo_name)
 
     if os.path.exists(repo_name):
         os.chdir(repo_name + "/src")
         subprocess.run(["git", "pull"])
+        os.chdir(os.pardir)
         os.chdir(os.pardir)
     else:
         subprocess.run(["git", "clone", url, repo_name + "/src"])

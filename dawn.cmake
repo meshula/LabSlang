@@ -6,15 +6,16 @@ if (POLICY CMP0077)
     cmake_policy(SET CMP0077 NEW)
 endif()
 
-add_subdirectory(SPIRV-Headers)
+add_subdirectory("${LABSLANG_ROOT}/vulkan-deps/SPIRV-Headers/src")
 set(SPIRV_SKIP_EXECUTABLES ON)
-add_subdirectory(SPIRV-Tools)
+add_subdirectory("${LABSLANG_ROOT}/vulkan-deps/SPIRV-Tools/src")
 
 set(ENABLE_SPVREMAPPER OFF)
 set(ENABLE_CTEST OFF)
 set(TINT_THIRD_PARTY_DIR ${LABSLANG_ROOT})
 set(TINT_BUILD_SPV_READER ON)
 set(TINT_BUILD_GLSL_WRITER ON)
+set(TINT_BUILD_TESTS OFF)
 #add_subdirectory(tint)
 
 #add_subdirectory(glm)
@@ -31,11 +32,11 @@ set(webgpu_gen_headers
     webgpu_cpp_print.h)
 
 foreach (H ${webgpu_gen_headers})
-    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/dawn/gen/src/include/dawn/${H}
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/dawn/gen/include/dawn/${H}
             DESTINATION ${CMAKE_INSTALL_PREFIX}/include/dawn)
 endforeach()
 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/dawn/gen/src/include/dawn/webgpu.h
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/dawn/gen/include/dawn/webgpu.h
         DESTINATION ${CMAKE_INSTALL_PREFIX}/include/webgpu)
 
 set(dawn_headers
@@ -44,7 +45,7 @@ set(dawn_headers
     dawn_wsi.h
     EnumClassBitmasks.h)
 foreach (H ${dawn_headers})
-    install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/dawn/src/include/dawn/${H}
+    install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/dawn/include/dawn/${H}
             DESTINATION ${CMAKE_INSTALL_PREFIX}/include/dawn)
 endforeach()
 
@@ -57,8 +58,17 @@ set(dawn_native_headers
     VulkanBackend.h
     dawn_native_export.h)
 foreach (H ${dawn_native_headers})
-    install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/dawn/src/include/dawn_native/${H}
-            DESTINATION ${CMAKE_INSTALL_PREFIX}/include/dawn_native)
+    install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/dawn/include/dawn/native/${H}
+            DESTINATION ${CMAKE_INSTALL_PREFIX}/include/dawn/native)
+endforeach()
+
+
+set(dawn_platform_headers
+    DawnPlatform.h
+    dawn_platform_export.h)
+foreach (H ${dawn_platform_headers})
+    install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/dawn/include/dawn/platform/${H}
+            DESTINATION ${CMAKE_INSTALL_PREFIX}/include/dawn/platform)
 endforeach()
 
 set(dawn_libs
