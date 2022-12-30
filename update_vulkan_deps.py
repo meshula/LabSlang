@@ -9,10 +9,22 @@ if sys.version_info < (3, 9):
     print("Python 3.9 or greater is required")
     sys.exit()
 
+if len(sys.argv) == 1:
+    basepath = "./"
+else:
+    basepath = sys.argv[1:][0] + "/"
+
+path = basepath + "vulkan-deps-src"
+
+print("source path is ", path)
+
+if not os.path.exists(basepath + "vulkan-deps"):
+    os.makedirs(basepath + "vulkan-deps")
+
 # this updates the git repos according to the pattern the dawn build expects
 def git_update(url: str, sha: str) -> None:
     original_cwd = os.getcwd()
-    os.chdir("vulkan-deps")
+    os.chdir(basepath + "vulkan-deps")
     repo_name = url.split("/")[-1]
     #print("BEFORE >>>>> ", repo_name)
     repo_name = repo_name.removesuffix(".git")
@@ -34,9 +46,6 @@ def git_update(url: str, sha: str) -> None:
         subprocess.run(["git", "checkout", sha])
     os.chdir(original_cwd)
 
-path = "vulkan-deps-src"
-if not os.path.exists("vulkan-deps"):
-    os.makedirs("vulkan-deps")
 for root, dirs, files in os.walk(path):
     if root == path:
         continue
