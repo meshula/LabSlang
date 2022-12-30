@@ -1,7 +1,8 @@
 # this target guard exists so that if glfw was previously built by another
 # project in the hierarchy it won't be redundantly built
 
-if (TARGET glfw)
+find_package(glfw3 QUIET)
+if (TARGET glfw OR TARGET glfw3)
     message(STATUS "Found glfw")
 else()
     message(STATUS "Installing glfw")
@@ -24,3 +25,4 @@ else()
         add_subdirectory(${glfw_SOURCE_DIR} ${glfw_BINARY_DIR})
     endif()
 endif()
+
