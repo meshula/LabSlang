@@ -3,6 +3,11 @@
 LabSlang is currently a .gitmodules file and some scripts
 that result in a reliable dawn/tint build set up.
 
+## Prerequisites
+
+- Python 3.9 or greater
+- jinja2 needs to be installed via pip or conda
+
 ## First time
 
 Clone recursively, then run `python update_vulkan_deps.py` ~ python will
